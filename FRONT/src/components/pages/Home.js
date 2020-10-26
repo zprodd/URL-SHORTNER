@@ -5,6 +5,7 @@ import Axios from "axios";
 import ErrorNotice from "../misc/ErrorNotice";
 import AuthOptions from "../auth/AuthOptions";
 import SuccessNotice from "../misc/SuccessNotice";
+//import viewCount from "../../../../BACK/models/viewCount";
 
 export default function Home() {
   const { userData } = useContext(UserContext);
@@ -14,6 +15,20 @@ export default function Home() {
   const [deleteCustomLink, setdeleteCustomLink] = useState();
   const [success, setsuccess] = useState();
   const [title, settitle] = useState();
+  const [totalViewCounts, settotalViewCounts] = useState();
+
+  useEffect(() => {
+    //console.log('use effect start in app.js');
+    const checkLoggedIn = async () => {
+      console.log('starting useeffect');
+      var viewCountsresponse = await Axios.post('http://localhost:5000/users/increaseViewCount');
+      //console.log(viewCountsresponse.data.totalNumberOffCounts);
+      settotalViewCounts(viewCountsresponse.data.totalNumberOffCounts);
+      console.log('ended useeffect');
+    };
+
+    checkLoggedIn();
+  }, []);
 
   // const [email, setemail] = useState();
   // setemail(userData.user.displayName);
@@ -89,13 +104,15 @@ export default function Home() {
   const a = async (e) => {
     try {
       e.preventDefault();
+
+      Axios.post('http://localhost:5000/users/increaseViewCount');
       
-      const email = userData.user.email;
-      const newQuick = { full ,email};
-      const quickRegister = await Axios.post(
-        "http://localhost:5000/users/quick",
-        newQuick
-      );
+      // const email = userData.user.email;
+      // const newQuick = { full ,email};
+      // const quickRegister = await Axios.post(
+      //   "http://localhost:5000/users/quick",
+      //   newQuick
+      // );
     } catch (err) {
       err.response.data.msg && seterror(err.response.data.msg);
       console.log(err);
@@ -106,6 +123,8 @@ export default function Home() {
     <div className="page">
       {userData.user ? (
         <div>
+
+          
           <h1>Welcome {userData.user.displayName}</h1>
           <h1>EMAIL {userData.user.email}</h1>
           <h1>TOKEN {userData.token}</h1>
@@ -144,6 +163,8 @@ export default function Home() {
 
             <input type="submit" value="Create" />
           </form>
+          <br></br>
+          <h1>TOTAL VIEWS {totalViewCounts}</h1>
 
           {/* <h2>DELETE CUSTOM</h2>
           <form onSubmit={deleteCustomLinkFunction}>
@@ -185,6 +206,8 @@ export default function Home() {
 
             <input type="submit" value="Register" />
           </form>
+          <br></br>
+          <h1>TOTAL VIEWS {totalViewCounts}</h1>
         </>
       )}
     </div>

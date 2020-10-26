@@ -5,7 +5,38 @@ const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
 const User = require("../models/userModel");
 const ShrotUrl = require("../models/shortUrl");
+const ViewCount = require("../models/viewCount");
 const shortid = require("shortid");
+
+router.post("/increaseViewCount", async (req, res) => {
+  try {
+    //console.log('inside viewCount');
+    // const increment = await ViewCount.findByIdAndUpdate({name:"noOfViews"},{ $inc: { counts: 1 } });
+    // //increment.save();
+    // // const q = new ViewCount({
+    // //   counts: 1
+    // // });
+    // // q.save();
+    // console.log(increment);
+    // console.log('done');
+
+
+
+  const q = await ViewCount.findOne({ name: 'noOfViews' });
+  // if (shortUrl == null) return res.sendStatus(401);
+  if (q == null) return res.json({ found: false });
+  // console.log(q);
+  // console.log(q.counts);
+  q.counts++;
+  q.save();
+  // console.log(q.counts);
+  res.json({"totalNumberOffCounts":q.counts});
+  console.log('incremented count');
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 router.post("/register", async (req, res) => {
   try {
@@ -240,11 +271,11 @@ router.post("/:shortUrl", async (req, res) => {
 
   const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl });
   // if (shortUrl == null) return res.sendStatus(401);
-  if (shortUrl == null) return res.json({found:false});
+  if (shortUrl == null) return res.json({ found: false });
   console.log(shortUrl);
   shortUrl.clicks++;
   shortUrl.save();
-  res.json({ fullUrl: shortUrl.full, title: shortUrl.title ,found:true});
+  res.json({ fullUrl: shortUrl.full, title: shortUrl.title, found: true });
   //res.redirect(shortUrl.full);
 });
 

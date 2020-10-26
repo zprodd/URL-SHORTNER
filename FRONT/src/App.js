@@ -6,10 +6,8 @@ import Header from "./components/layout/Header";
 import Home from "./components/pages/Home";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
-import Quick from "./components/Quick";
 import UserContext from "./context/UserContext";
-import Custom from "./components/Custom";
-import Dashboard from "./components/dashboard";
+
 import ZZ from "./components/Z";
 
 import "./style.css";
